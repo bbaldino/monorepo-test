@@ -11,7 +11,7 @@
     <properties>
         <jvb.version>2.0-SNAPSHOT</jvb.version>
         <jmt.version>1.2-SNAPSHOT</jmt.version>
-        <rtp.version>1.0-SNAPSHOT</rtp.version>
+        <rtp.version>1.1-SNAPSHOT</rtp.version>
     </properties>
 
     <modules>
