@@ -1,3 +1,5 @@
 package org.groupId
 
-class Packet
+class Packet {
+    val id = 42
+}
