@@ -4,5 +4,6 @@ class Endpoint {
     private val node = Node()
     fun handlePacket(packet: Packet) {
         node.processPacket(packet)
+        //TODO: do something else
     }
 }
