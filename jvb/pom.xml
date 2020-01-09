@@ -21,12 +21,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jmt</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>${jmt.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>rtp</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${rtp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

@@ -8,6 +8,11 @@
     <artifactId>monorepo-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <properties>
+        <jvb.version>2.0-SNAPSHOT</jvb.version>
+        <jmt.version>1.2-SNAPSHOT</jmt.version>
+        <rtp.version>1.0-SNAPSHOT</rtp.version>
+    </properties>
 
     <modules>
         <module>rtp</module>
