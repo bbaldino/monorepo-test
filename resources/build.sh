@@ -3,7 +3,7 @@
 # Given a regex, return the most recent git tag which matches
 function getLatestTagMatching() {
   regex=$1
-  echo $(git describe --match "$regex" --abbrev=0 --tags `git rev-list --tags --max-count=1`)
+  echo $(git describe --match "$regex" --abbrev=0)
 }
 
 # Given the variable (maven property) used to hold a module's version, return the
@@ -18,13 +18,13 @@ function getMajorMinorVersionOfModule() {
 # 1) module_name: A friendly name for the module.  Used for logging
 # 2) module_version_variable_name: The name of the maven property used to hold this module's version
 # 3) module_tag_regex: A regex which describes the git tags used for this module
-# 4) module_dir: The directory in which the module is held.  Used to count how many changes have
-#                been made in this module since the last tag
+# 4) module_pathspec: A git pathspec which will match all directories which should be considered
+#                     when calculating the most recent change hash and patch num for a module
 function setVersionForModule() {
   module_name=$1
   module_version_variable_name=$2
   module_tag_regex=$3
-  module_dir=$4
+  module_pathspec=$4
 
   current_version_major_minor=$(getMajorMinorVersionOfModule "$module_version_variable_name")
   echo "Current $module_name version is ${current_version_major_minor}"
@@ -33,10 +33,10 @@ function setVersionForModule() {
   echo "Most recent $module_name tag is $most_recent_tag"
 
   # Get the hash of the commit corresponding to the most recent change to be used in the version
-  most_recent_change_hash_short=$(git log --format=%h --max-count=1 $most_recent_tag..HEAD $module_dir)
-  echo "Most recent commit in $module_name is $most_recent_change_hash_short"
+  most_recent_change_hash_short=$(git log --format=%h --max-count=1 $most_recent_tag..HEAD -- $module_pathspec)
+  echo "Most recent commit in $module_name (or its dependencies: $module_pathspec) is $most_recent_change_hash_short"
   # xargs is used to trim whitespace from the result
-  patch_num=$(git log --format=%H $most_recent_tag..HEAD $module_dir | wc -l | xargs)
+  patch_num=$(git log --format=%H $most_recent_tag..HEAD -- $module_pathspec | wc -l | xargs)
   echo "Calculated $module_name patch num from $most_recent_change_hash_short is $patch_num"
   new_version="$current_version_major_minor-$patch_num-g$most_recent_change_hash_short"
   echo "$module_name new version is $new_version"
@@ -64,6 +64,6 @@ if [ ! -d "./rtp" ] || [ ! -d "./jmt" ] || [ ! -d "./jvb" ] ; then
   exit 1
 fi
 
-setVersionForModule "RTP" "rtp.version" "rtp*" "rtp/"
-setVersionForModule "JMT" "jmt.version" "jmt*" "jmt/"
-setVersionForModule "JVB" "jvb.version" "jvb*" "jvb/"
+setVersionForModule "RTP" "rtp.version" "rtp*" "rtp"
+setVersionForModule "JMT" "jmt.version" "jmt*" "jmt rtp"
+setVersionForModule "JVB" "jvb.version" "jvb*" "jvb jmt rtp"
