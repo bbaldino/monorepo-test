@@ -5,14 +5,19 @@ function getLatestTagMatching() {
   echo $(git describe --match "$regex" --abbrev=0 --tags `git rev-list --tags --max-count=1`)
 }
 
+function getMajorMinorVersionOfModule() {
+  module_version_variable_name=$1
+  current_version=$(mvn help:evaluate -Dexpression="$module_version_variable_name" -q -DforceStdout)
+  echo "${current_version/-SNAPSHOT/}"
+}
+
 function setVersionForModule() {
   module_name=$1
   module_version_variable_name=$2
   module_tag_regex=$3
   module_dir=$4
 
-  current_version=$(mvn help:evaluate -Dexpression="$module_version_variable_name" -q -DforceStdout)
-  current_version_major_minor="${current_version/-SNAPSHOT/}"
+  current_version_major_minor=$(getMajorMinorVersionOfModule "$module_version_variable_name")
   echo "Current $module_name version is ${current_version_major_minor}"
 
   most_recent_tag=$(getLatestTagMatching "$module_tag_regex")
